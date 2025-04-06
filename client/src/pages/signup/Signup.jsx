@@ -3,10 +3,13 @@ import './Signup.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
   });
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -15,10 +18,40 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setLoading(true);
+    setError('');
+  
+    try {
+      const res = await fetch('http://localhost:5000/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await res.json().catch(() => ({}));
+  
+      if (!res.ok) {
+        setError(data.message || 'Signup failed');
+        setLoading(false);
+        return;
+      }
+  
+      localStorage.setItem('token', data.token);
+      alert('Signup Successful!');
+      window.location.href = '/login';
+  
+    } catch (err) {
+      setError('Something went wrong!');
+    }
+  
+    setLoading(false);
   };
+  
+  
 
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
@@ -28,22 +61,29 @@ const Signup = () => {
         <h2>Signup</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+            <label>Name</label>
+            <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+
           </div>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+            <label>Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+            <label>Password</label>
+            <input type="password" name="password" value={formData.password} onChange={handleChange} required />
           </div>
 
-          <button type="submit">Signup</button>
+          {error && <p className="error">{error}</p>}
+
+          <button type="submit" disabled={loading}>
+             {loading ? 'Signing up...' : 'Signup'}
+          </button>
+
+
           <p className="login-link">
-    Already have an account? <a href="/login">Login</a>
-  </p>
+            Already have an account? <a href="/login">Login</a>
+          </p>
         </form>
       </div>
     </div>
