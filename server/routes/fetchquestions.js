@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { addCustomQuestion ,getAllCustomQuestions,getQuestionById} = require('../controllers/questionsController');
 
-const { insertCodeforcesQuestions ,getAllQuestions} = require('../controllers/questionsController');
-router.get('/fetch-codeforces', insertCodeforcesQuestions);
-router.get('/all', getAllQuestions);
+router.post('/add-question', addCustomQuestion);
+router.get('/all-questions', getAllCustomQuestions);
+router.get('/question/:id', getQuestionById);
+
 module.exports = router;

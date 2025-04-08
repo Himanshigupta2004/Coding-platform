@@ -4,6 +4,7 @@ const userRoutes = require('./routes/userRoutes');
 const cors=require('cors');
 const mysql=require('mysql2');
 const questionRoutes = require('./routes/fetchquestions');
+const code=Routes = require('./routes/codeRoutes');
 require('dotenv').config();
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 app.use('/api/users', userRoutes);
 app.use('/api/questions', questionRoutes);
+app.use('/api/code', code);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
