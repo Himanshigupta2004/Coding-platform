@@ -31,7 +31,7 @@ const Login = () => {
 
             localStorage.setItem('token', data.token);
             alert('Login successful!');
-            window.location.href = '/dashboard';  // or home page
+            window.location.href = '/questions';  
 
         } catch (err) {
             setError('Something went wrong!');

@@ -4,10 +4,15 @@ const userRoutes = require('./routes/userRoutes');
 const cors=require('cors');
 const mysql=require('mysql2');
 const questionRoutes = require('./routes/fetchquestions');
-const code=Routes = require('./routes/codeRoutes');
+const code = require('./routes/codeRoutes');
 require('dotenv').config();
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Allow requests from any origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+    credentials: true  // Optional: allow cookies/auth headers
+  }));
+  
 
 app.use(express.json());
 

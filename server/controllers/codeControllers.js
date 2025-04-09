@@ -1,46 +1,29 @@
-const axios = require('axios');
+const runCode = require("../utils/runCode");
 
-const languageMap = {
-  cpp: 54,
-  python: 71,
-  java: 62,
-  c: 50,
-  javascript: 63,
-  go: 60,
-  ruby: 72,
-  php: 68,
-  rust: 73,
-};
+const runMultipleTestCases = async (req, res) => {
+  const { code, language, testcases } = req.body;
 
-const runCode = async (req, res) => {
-  const { code, language } = req.body;
-
-  if (!languageMap[language]) {
-    return res.status(400).json({ error: 'Language not supported' });
+  if (!code || !language || !testcases) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
-  try {
-    const response = await axios.post(
-      'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true',
-      {
-        source_code: code,
-        language_id: languageMap[language],
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-          'X-RapidAPI-Host': process.env.RAPIDAPI_HOST,
-        },
-      }
-    );
+  const results = [];
 
-    res.json({ output: response.data.stdout || response.data.stderr || 'No Output' });
+  for (const testcase of testcases) {
+    const result = await runCode(code, language, testcase.input);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error while executing code' });
+    results.push({
+      type: testcase.type,
+      input: testcase.input,
+      expectedOutput: testcase.expectedOutput,
+      output: result.output.trim(),
+      isCorrect: result.output.trim() === testcase.expectedOutput.trim(),
+    });
   }
+
+  return res.json({ results });
 };
 
-module.exports = { runCode };
+module.exports = {
+  runMultipleTestCases,
+};

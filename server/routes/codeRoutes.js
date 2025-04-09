@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { runCode } = require('../controllers/codeControllers');
-
-router.post('/run', runCode);
+const {runMultipleTestCases} = require('../controllers/codeControllers');
+router.post("/run-multiple", runMultipleTestCases);
 
 module.exports = router;

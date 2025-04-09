@@ -49,7 +49,17 @@ const Compiler = () => {
       <button onClick={handleRunCode}>Run Code</button>
 
       <h3>Output:</h3>
-      <pre>{output}</pre>
+
+{output.includes('error') || output.includes('Error') || output.includes('Exception') ? (
+  <pre style={{ color: 'red', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+    {output}
+  </pre>
+) : (
+  <pre style={{ color: 'green', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+    {output}
+  </pre>
+)}
+
     </div>
   );
 };
